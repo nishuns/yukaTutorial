@@ -7,6 +7,7 @@ import addGltfToPath from './addGltfToPath';
 import addModel from './addModel';
 import getCoordinatesWithObstacle from './getCoordinateFromObstacle';
 import sync from './syncModelToPath';
+import SampleData from '../assets/json/sampleEvent.json';
 
 //------------------------------------- RENDERED INIT -------------------------------------------------------------------------------
 
@@ -142,6 +143,50 @@ pointLightFolder.open();
 
 camera.position.z = 5;
 
+const Vehicles = [];
+const paths = {
+
+}
+const entityManagers = {};
+function CreateUserCar(event) {
+    const username = event.username;
+    if (!Vehicles.includes(username)) {
+        Vehicles.push(username);
+        paths[username] = {};
+        paths[username].vehicle = new YUKA.Vehicle();
+        addModel(new URL('../assets/SportsCar.gltf', import.meta.url), 0.2, new THREE.Vector3(0, 0, 0), false).then((car) => {
+            scene.add(car);
+            paths[username].vehicle.setRenderComponent(car, sync);
+        })
+        paths[username].path = new YUKA.Path()
+        paths[username].path.add(getCoordinatesWithObstacle(event.activity));
+        paths[username].path.loop = true;
+        paths[username].vehicle.position.copy(paths[username].path.current());
+        paths[username].vehicle.maxSpeed = 4;
+
+        const followPathBehavior = new YUKA.FollowPathBehavior(paths[username].path, 0.5);
+        paths[username].vehicle.steering.add(followPathBehavior);
+
+        const onPathBehavior = new YUKA.OnPathBehavior(paths[username].path);
+        onPathBehavior.radius = 2;
+        paths[username].vehicle.steering.add(onPathBehavior);
+
+        const entityManager = new YUKA.EntityManager();
+        entityManager.add(paths[username].vehicle);
+        return { entityManager, username };
+    }
+    paths[username].path.add(getCoordinatesWithObstacle(event.activity));
+    return null;
+}
+
+SampleData.forEach((each) => {
+    const obj = CreateUserCar(each);
+    if (obj) {
+        entityManagers[obj.username] = obj.entityManager;
+    }
+});
+console.log(entityManagers);
+
 // added one vehicle
 const vehicle = new YUKA.Vehicle();
 addModel(new URL('../assets/SportsCar.gltf', import.meta.url), 0.2, new THREE.Vector3(0, 0, 0), false).then((car) => {
@@ -163,12 +208,22 @@ const userEventData = [
     {
         username: 'ankit.m.ed',
         url: 'https://youtube.com',
-        activity: 'base',
+        activity: 'BASE',
     },
     {
         username: 'ankit.m.ed',
         url: 'https://youtube.com',
-        activity: 'idle',
+        activity: 'SEARCHED',
+    },
+    {
+        username: 'ankit.m.ed',
+        url: 'https://youtube.com',
+        activity: 'BASE',
+    },
+    {
+        username: 'ankit.m.ed',
+        url: 'https://youtube.com',
+        activity: 'IDLE',
     },
     {
         username: 'ankit.m.ed',
@@ -178,27 +233,27 @@ const userEventData = [
     {
         username: 'ankit.m.ed',
         url: 'https://youtube.com',
-        activity: 'searched',
+        activity: 'SEARCHED',
     },
     {
         username: 'ankit.m.ed',
         url: 'https://youtube.com',
-        activity: 'noted',
+        activity: 'NOTED',
     },
     {
         username: 'ankit.m.ed',
         url: 'https://youtube.com',
-        activity: 'fun',
+        activity: 'EXPLORED',
     },
     {
         username: 'ankit.m.ed',
         url: 'https://youtube.com',
-        activity: 'visited',
+        activity: 'VISITED',
     },
     {
         username: 'ankit.m.ed',
         url: 'https://youtube.com',
-        activity: 'base',
+        activity: 'BASE',
     }
 
 ]
@@ -213,42 +268,7 @@ const userEventData2 = [
     {
         username: 'flawsophies',
         url: 'https://youtube.com',
-        activity: 'idle',
-    },
-    {
-        username: 'flawsophies',
-        url: 'https://youtube.com',
-        activity: 'base',
-    },
-    {
-        username: 'flawsophies',
-        url: 'https://youtube.com',
-    },
-    {
-        username: 'flawsophies',
-        url: 'https://youtube.com',
-        activity: 'searched',
-        activity: 'noted',
-    },
-    {
-        username: 'flawsophies',
-        url: 'https://youtube.com',
-        activity: 'video',
-    },
-    {
-        username: 'flawsophies',
-        url: 'https://youtube.com',
-        activity: 'visited',
-    },
-    {
-        username: 'flawsophies',
-        url: 'https://youtube.com',
-        activity: 'fun',
-    },
-    {
-        username: 'flawsophies',
-        url: 'https://youtube.com',
-        activity: 'idle',
+        activity: 'IDLE',
     }
 
 ]
@@ -301,12 +321,63 @@ entityManager2.add(vehicle2);
 // const lines = new THREE.LineLoop(lineGeometry, lineMaterial);
 // scene.add(lines);
 
+const eventPath3 = [
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'BASE',
+    },
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'SEARCHED',
+    },
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'NOTED',
+    },
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'WATCHED',
+    },
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'IDLE',
+    },
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'VISITED',
+    },
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'EXPLORED',
+    },
+    {
+        username: 'flawsophies',
+        url: 'https://youtube.com',
+        activity: 'IDLE',
+    }
+];
+
+eventPath3.forEach((each) => {
+    path2.add(getCoordinatesWithObstacle(each.activity));
+})
+
+
 const time = new YUKA.Time();
 
 function animate() {
     const delta = time.update().getDelta();
     entityManager.update(delta);
     entityManager2.update(delta);
+    Vehicles.forEach((each) => {
+        entityManagers[each].update(delta);
+    })
     controls.update(); // Update orbital controls
     renderer.render(scene, camera);
 }

@@ -3,19 +3,19 @@ import * as YUKA from 'yuka';
 // Mapping Function
 function getCoordinatesWithObstacle(obstacleName) {
     switch (obstacleName) {
-        case 'video':
+        case 'WATCHED':
             return new YUKA.Vector3(-14, 0, 14);
-        case 'visited':
+        case 'VISITED':
             return new YUKA.Vector3(-16, 0, 0);
-        case 'reading':
+        case 'SEARCHED':
             return new YUKA.Vector3(-14, 0, -14);
-        case 'idle':
+        case 'IDLE':
             return new YUKA.Vector3(14, 0, -14);
-        case 'fun':
+        case 'EXPLORED':
             return new YUKA.Vector3(14, 0, 14);
-        case 'searched':
+        case 'NOTED':
             return new YUKA.Vector3(16, 0, 0);
-        case 'noted':
+        case 'GRAPH':
             return new YUKA.Vector3(0, 0, 16);
         default:
             return new YUKA.Vector3(0, 0, 0);
