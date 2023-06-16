@@ -147,6 +147,27 @@ const Vehicles = [];
 const paths = {
 
 }
+function mapModel(username) {
+    switch (username) {
+        case 'nischay.s.ed':
+            return new URL(`../assets/users/Taxi.glb`, import.meta.url) ;
+        case 'flawsophies':
+            return new URL(`../assets/users/Cop.gltf`, import.meta.url);
+        case 'darklord':
+            return new URL(`../assets/users/NormalCar1.glb`, import.meta.url);
+        case 'rohit.n.ed':
+            return new URL(`../assets/users/NormalCar2.glb`, import.meta.url);
+        case 'neelaneel':
+            return new URL(`../assets/users/SportsCar.gltf`, import.meta.url);
+        case 'ankit.m.ed':
+            return new URL(`../assets/users/SUV.glb`, import.meta.url);
+        default:
+            return 'Taxi.glb';
+    }
+}
+
+
+
 const entityManagers = {};
 function CreateUserCar(event) {
     const username = event.username;
@@ -154,7 +175,7 @@ function CreateUserCar(event) {
         Vehicles.push(username);
         paths[username] = {};
         paths[username].vehicle = new YUKA.Vehicle();
-        addModel(new URL('../assets/SportsCar.gltf', import.meta.url), 0.2, new THREE.Vector3(0, 0, 0), false).then((car) => {
+        addModel(mapModel(username), 0.2, new THREE.Vector3(0, 0, 0), false).then((car) => {
             scene.add(car);
             paths[username].vehicle.setRenderComponent(car, sync);
         })
